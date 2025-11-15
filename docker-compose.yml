@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  api:
+    build: .
+    container_name: salon-api
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '3000:3000'
+    command: ['node', 'dist/main.js']
+
+  postgres:
+    image: postgres:16
+    container_name: salon-postgres
+    environment:
+      POSTGRES_DB: salon_db
+      POSTGRES_USER: salon_user
+      POSTGRES_PASSWORD: salon_password
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: salon-redis
+    ports:
+      - '6379:6379'
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: salon-n8n
+    ports:
+      - '5678:5678'
+    environment:
+      - GENERIC_TIMEZONE=UTC
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: salon-nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+
+

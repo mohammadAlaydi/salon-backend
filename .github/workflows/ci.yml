@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: salon_db
+          POSTGRES_USER: salon_user
+          POSTGRES_PASSWORD: salon_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U salon_user -d salon_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DATABASE_URL: postgresql://salon_user:salon_password@localhost:5432/salon_db?schema=public
+      JWT_ACCESS_TOKEN_SECRET: test-secret
+      JWT_REFRESH_TOKEN_SECRET: test-secret-refresh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm install
+
+      - name: Prisma migrate
+        run: npx prisma migrate deploy
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+
