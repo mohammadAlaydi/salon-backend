@@ -4,17 +4,17 @@ import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
 export class CreateServiceDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsInt()
   @Min(0)
-  priceCents: number;
+  priceCents!: number;
 
   @ApiProperty()
   @IsInt()
   @Min(1)
-  durationMinutes: number;
+  durationMinutes!: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

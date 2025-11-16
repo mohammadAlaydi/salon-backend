@@ -5,6 +5,7 @@ import { UpdateStaffDto } from './dto/update-staff.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../auth/roles.enum';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class StaffService {
@@ -39,23 +40,29 @@ export class StaffService {
 
   async create(salonId: string, dto: CreateStaffDto) {
     const passwordHash = await bcrypt.hash('ChangeMe123!', 12);
-    return this.prisma.staffProfile.create({
-      data: {
-        salonId,
-        skills: dto.skills ?? [],
-        colorTag: dto.colorTag,
-        user: {
-          create: {
-            salonId,
-            email: dto.email,
-            name: dto.name,
-            phone: dto.phone,
-            passwordHash,
-            role: Role.STAFF,
-          },
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          salonId,
+          email: dto.email,
+          name: dto.name,
+          phone: dto.phone,
+          passwordHash,
+          role: Role.STAFF,
         },
-      },
-      include: { user: true },
+      });
+
+      const profile = await tx.staffProfile.create({
+        data: {
+          salonId,
+          userId: user.id,
+          skills: dto.skills?.length ? (dto.skills as unknown as Prisma.InputJsonValue) : Prisma.DbNull,
+          colorTag: dto.colorTag,
+        },
+        include: { user: true },
+      });
+
+      return profile;
     });
   }
 
@@ -64,7 +71,7 @@ export class StaffService {
     return this.prisma.staffProfile.update({
       where: { id },
       data: {
-        skills: dto.skills ?? existing.skills,
+        skills: (dto.skills as unknown) === null ? Prisma.DbNull : (dto.skills as unknown as Prisma.InputJsonValue),
         colorTag: dto.colorTag ?? existing.colorTag,
         user: {
           update: {

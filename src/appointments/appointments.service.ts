@@ -138,7 +138,12 @@ export class AppointmentsService {
           status: dto.status ?? AppointmentStatus.PENDING,
           paymentStatus: dto.paymentStatus ?? PaymentStatus.UNPAID,
           idempotencyKey,
-          notes: dto.notes,
+          notes:
+            dto.notes === undefined
+              ? undefined
+              : dto.notes === null
+              ? Prisma.DbNull
+              : (dto.notes as Prisma.InputJsonValue),
         },
       });
       return created;
@@ -208,7 +213,12 @@ export class AppointmentsService {
           endAt,
           durationMinutes,
           priceCents: dto.priceCents ?? existing.priceCents,
-          notes: dto.notes ?? existing.notes,
+          notes:
+            dto.notes === undefined
+              ? undefined
+              : dto.notes === null
+              ? Prisma.DbNull
+              : (dto.notes as Prisma.InputJsonValue),
         },
       });
     });
@@ -261,7 +271,7 @@ export class AppointmentsService {
 
   private async autoAssignStaff(
     salonId: string,
-    serviceId: string,
+    _serviceId: string,
     startAt: Date,
     endAt: Date,
   ): Promise<string | null> {
@@ -276,7 +286,7 @@ export class AppointmentsService {
         (a) =>
           a.startAt < endAt &&
           a.endAt > startAt &&
-          [AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED].includes(a.status),
+          ([AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED] as AppointmentStatus[]).includes(a.status),
       );
       if (!overlapping) {
         return s.id;

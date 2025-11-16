@@ -5,11 +5,11 @@ import { AppointmentStatus, PaymentStatus } from '@prisma/client';
 export class CreateAppointmentDto {
   @ApiProperty()
   @IsString()
-  customerId: string;
+  customerId!: string;
 
   @ApiProperty()
   @IsString()
-  serviceId: string;
+  serviceId!: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -18,7 +18,7 @@ export class CreateAppointmentDto {
 
   @ApiProperty()
   @IsDateString()
-  startAt: string;
+  startAt!: string;
 
   @ApiPropertyOptional()
   @IsOptional()

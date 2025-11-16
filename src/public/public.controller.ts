@@ -11,7 +11,7 @@ export class PublicController {
 
   // Salon-specific routes
   @Get('salons/:slug')
-  async getSalon(@Param('slug') slug: string, @CurrentSalon() salon: Salon | undefined) {
+  async getSalon(@Param('slug') _slug: string, @CurrentSalon() salon: Salon | undefined) {
     if (!salon) {
       throw new NotFoundException('Salon not found');
     }
@@ -30,7 +30,7 @@ export class PublicController {
   }
 
   @Get('salons/:slug/services')
-  async getServicesBySlug(@Param('slug') slug: string, @CurrentSalon() salon: Salon | undefined) {
+  async getServicesBySlug(@Param('slug') _slug: string, @CurrentSalon() salon: Salon | undefined) {
     if (!salon) {
       throw new NotFoundException('Salon not found');
     }
@@ -56,7 +56,7 @@ export class PublicController {
   }
 
   @Get('salons/:slug/staff')
-  async getStaffBySlug(@Param('slug') slug: string, @CurrentSalon() salon: Salon | undefined) {
+  async getStaffBySlug(@Param('slug') _slug: string, @CurrentSalon() salon: Salon | undefined) {
     if (!salon) {
       throw new NotFoundException('Salon not found');
     }
@@ -93,7 +93,7 @@ export class PublicController {
   }
 
   @Get('staff')
-  async getStaff(@Query('serviceId') serviceId: string | undefined, @CurrentSalon() salon: Salon | undefined) {
+  async getStaff(@Query('serviceId') _serviceId: string | undefined, @CurrentSalon() salon: Salon | undefined) {
     if (!salon) {
       throw new NotFoundException('Salon not found');
     }

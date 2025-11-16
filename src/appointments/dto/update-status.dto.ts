@@ -5,7 +5,7 @@ import { AppointmentStatus } from '@prisma/client';
 export class UpdateAppointmentStatusDto {
   @ApiProperty({ enum: AppointmentStatus })
   @IsEnum(AppointmentStatus)
-  status: AppointmentStatus;
+  status!: AppointmentStatus;
 }
 
 

@@ -4,24 +4,24 @@ import { IsEmail, IsString, MinLength } from 'class-validator';
 export class RegisterSalonAdminDto {
   @ApiProperty()
   @IsString()
-  salonName: string;
+  salonName!: string;
 
   @ApiProperty()
   @IsString()
-  salonSlug: string;
+  salonSlug!: string;
 
   @ApiProperty()
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty()
   @IsString()
   @MinLength(8)
-  password: string;
+  password!: string;
 
   @ApiProperty()
   @IsString()
-  adminName: string;
+  adminName!: string;
 }
 
 

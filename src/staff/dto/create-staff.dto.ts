@@ -4,11 +4,11 @@ import { IsArray, IsOptional, IsString } from 'class-validator';
 export class CreateStaffDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty()
   @IsString()
-  email: string;
+  email!: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

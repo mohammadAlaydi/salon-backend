@@ -1,19 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, ValidateNested } from 'class-validator';
+import { IsArray, ValidateNested, IsInt, Min, Max, IsString, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class WorkingHoursEntryDto {
   @ApiProperty()
-  dayOfWeek: number;
+  @IsInt()
+  @Min(0)
+  @Max(6)
+  dayOfWeek!: number;
 
   @ApiProperty()
-  startTime: string; // HH:MM
+  @IsString()
+  startTime!: string; // HH:MM
 
   @ApiProperty()
-  endTime: string; // HH:MM
+  @IsString()
+  endTime!: string; // HH:MM
 
   @ApiProperty()
-  isAvailable: boolean;
+  @IsBoolean()
+  isAvailable!: boolean;
 }
 
 export class UpdateWorkingHoursDto {
@@ -21,7 +27,7 @@ export class UpdateWorkingHoursDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => WorkingHoursEntryDto)
-  entries: WorkingHoursEntryDto[];
+  entries!: WorkingHoursEntryDto[];
 }
 
 
