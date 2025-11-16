@@ -16,7 +16,7 @@ export class PublicController {
       throw new NotFoundException('Salon not found');
     }
 
-    // Return public salon information
+    // Return public salon informationss
     return {
       id: salon.id,
       slug: salon.slug,
